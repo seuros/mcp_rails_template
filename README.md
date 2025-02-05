@@ -33,7 +33,6 @@ rails new your_app_name -m https://raw.githubusercontent.com/seuros/mcp_rails_te
   --skip-solid \
   --skip-hotwire \
   --skip-javascript \
-  --skip-rubocop \
   --skip-dev-gems \
   --skip-kamal
 
