@@ -127,26 +127,23 @@ The template removes unnecessary Rails components to maintain a minimal footprin
 
 ### Adding Custom Tools
 
-Example of adding a new tool:
+Tools can be added by updating the `config/mcp_tools.yml` configuration file:
 
-```ruby
-# In app/controllers/api/tools_controller.rb
-def list
-  tools = [
-    {
-      name: "your_tool_name",
-      description: "Your tool description",
-      input_schema: {
-        type: "object",
-        properties: {
-          # Your parameters here
-        },
-        required: ["required_param"]
-      }
-    }
-  ]
-  render json: { tools: tools }
-end
+```yaml
+tools:
+  - name: your_tool_name
+    description: Your tool description
+    input_schema:
+      type: object
+      properties:
+        param1:
+          type: string
+          description: Description of parameter 1
+        param2:
+          type: integer
+          description: Description of parameter 2
+      required:
+        - param1
 ```
 
 ## Contributing
