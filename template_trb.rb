@@ -43,6 +43,10 @@ environment 'config.api_only = true'
 gem 'railties', '~> 8.0.0'
 gem 'actionpack', '~> 8.0.0'
 gem 'rails_app_version'
+gem 'dry-validation'
+gem 'representable'
+gem 'reform'
+gem 'multi_json'
 
 # Create API directory structure
 empty_directory 'app/controllers/api'
@@ -54,7 +58,7 @@ file 'app/controllers/api/base_controller.rb', <<~RUBY
       abstract!
 
       def render_error(message, status = :unprocessable_entity)
-        render json: { error: message }, status: status
+      render json: { error: message }, status: status
       end
     end
   end
@@ -144,7 +148,7 @@ create_file 'test/integration/tools_test.rb', <<~RUBY
     class ToolsControllerTest < ActionDispatch::IntegrationTest
       test "list returns correctly structured tools" do
         post api_tools_path
-        
+
         assert_response :success
 
         response_body = JSON.parse(response.body)
@@ -171,6 +175,27 @@ create_file 'test/integration/tools_test.rb', <<~RUBY
   end
 RUBY
 
+# Create Service base
+create_file 'app/services/tool_base_service.rb', <<~RUBY
+  class ToolBaseService < Trailblazer::Operation
+
+  end
+RUBY
+
+# Create Base form
+create_file 'app/forms/tool_base_form.rb', <<~RUBY
+  require "reform/form/coercion"
+  require "reform/form/dry"
+  class ToolBaseForm < Reform::Form
+    feature Dry
+    feature Coercion
+    module Types
+      include Dry.Types()
+    end
+  end
+RUBY
+
+# Create version file
 file 'VERSION', <<~RUBY
   0.1.0
 RUBY
@@ -187,4 +212,6 @@ RUBY
 after_bundle do
   # Run version config task
   rake 'app:version:config'
+  # Run rubocop with autocorrect
+  run 'bundle exec rubocop -A'
 end
