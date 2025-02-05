@@ -65,37 +65,37 @@ file 'app/controllers/api/base_controller.rb', <<~RUBY
 RUBY
 
 # Create mcp tools config
-create_file 'config/mcp_tools.yml', <<~'YAML'
-shared:
-  tools:
-    - name: tool_name
-      description: Description of what the tool does in <%= Rails.application.name %>
-      input_schema:
-        type: object
-        properties:
-          param1:
-            type: string
-            description: Description of parameter 1
-          param2:
-            type: integer
-            description: Description of parameter 2
-          param3:
-            type: array
-            items:
+create_file 'config/mcp_tools.yml', <<~YAML
+  shared:
+    tools:
+      - name: tool_name
+        description: Description of what the tool does in <%= Rails.application.name %>
+        input_schema:
+          type: object
+          properties:
+            param1:
               type: string
-            description: Description of parameter 3
-        required:
-          - param1
-    - name: get_current_time
-      description: Get current time in a specific timezone (this is an example tool)
-      input_schema:
-        type: object
-        properties:
-          timezone:
-            type: string
-            description: IANA timezone name (e.g., 'America/New_York', 'Europe/London')
-        required:
-          - timezone
+              description: Description of parameter 1
+            param2:
+              type: integer
+              description: Description of parameter 2
+            param3:
+              type: array
+              items:
+                type: string
+              description: Description of parameter 3
+          required:
+            - param1
+      - name: get_current_time
+        description: Get current time in a specific timezone (this is an example tool)
+        input_schema:
+          type: object
+          properties:
+            timezone:
+              type: string
+              description: IANA timezone name (e.g., 'America/New_York', 'Europe/London')
+          required:
+            - timezone
 YAML
 
 # Create tools controller
