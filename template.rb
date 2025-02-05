@@ -19,7 +19,7 @@ remove_file 'script'
 remove_file 'vendor'
 
 # Remove unnecessary routes
-route "root to: ->(_) { [204, {}, ['']] }"
+route 'root to: ->(_) { [204, {}, ["MCP SERVER <%= Rails.application.to_s %> (<%= Rails.application.version.to_s %>)"]] }'
 
 gsub_file 'config/application.rb', %r{require "active_model/railtie"\n}, ''
 gsub_file 'config/application.rb', %r{require "active_job/railtie"\n}, ''
@@ -60,53 +60,46 @@ file 'app/controllers/api/base_controller.rb', <<~RUBY
   end
 RUBY
 
+# Create mcp tools config
+create_file 'config/mcp_tools.yml', <<~'YAML'
+shared:
+  tools:
+    - name: tool_name
+      description: Description of what the tool does in <%= Rails.application.name %>
+      input_schema:
+        type: object
+        properties:
+          param1:
+            type: string
+            description: Description of parameter 1
+          param2:
+            type: integer
+            description: Description of parameter 2
+          param3:
+            type: array
+            items:
+              type: string
+            description: Description of parameter 3
+        required:
+          - param1
+    - name: get_current_time
+      description: Get current time in a specific timezone (this is an example tool)
+      input_schema:
+        type: object
+        properties:
+          timezone:
+            type: string
+            description: IANA timezone name (e.g., 'America/New_York', 'Europe/London')
+        required:
+          - timezone
+YAML
+
 # Create tools controller
 create_file 'app/controllers/api/tools_controller.rb', <<~RUBY
   module Api
     class ToolsController < BaseController
       def list
-        tools = [
-          {
-            name: "tool_name",
-            description: "Description of what the tool does",
-            input_schema: {
-              type: "object",
-              properties: {
-                param1: {
-                  type: "string",
-                  description: "Description of parameter 1"
-                },
-                param2: {
-                  type: "integer",
-                  description: "Description of parameter 2"
-                },
-                param3: {
-                  type: "array",
-                  items: {
-                    type: "string"
-                  },
-                  description: "Description of parameter 3"
-                }
-              },
-              required: ["param1"]
-            }
-          },
-          {
-            name: "get_current_time",
-            description: "Get current time in a specific timezone (this is an example tool)",
-            input_schema: {
-              type: "object",
-              properties: {
-                timezone: {
-                  type: "string",
-                  description: "IANA timezone name (e.g., 'America/New_York', 'Europe/London')"
-                }
-              },
-              required: ["timezone"]
-            }
-          }
-        ]
-
+        tools = Rails.application.config_for(:mcp_tools)["tools"]
         render json: { tools: tools }
       end
 
@@ -169,6 +162,19 @@ create_file 'test/integration/tools_test.rb', <<~RUBY
       end
     end
   end
+RUBY
+
+create_file 'test/integration/root_test.rb', <<~RUBY
+require "test_helper"
+
+class RootTest < ActionDispatch::IntegrationTest
+  test "root displays application name and version" do
+    get root_path
+    
+    assert_response :no_content # 204 status
+    assert_equal 'MCP SERVER <%= Rails.application.to_s %> (<%= Rails.application.version.to_s %>)', response.body
+  end
+end
 RUBY
 
 file 'VERSION', <<~RUBY
