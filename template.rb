@@ -61,70 +61,85 @@ file 'app/controllers/api/base_controller.rb', <<~RUBY
 RUBY
 
 # Create mcp tools config
-create_file 'config/mcp_tools.yml', <<~'YAML'
-shared:
-  tools:
-    - name: tool_name
-      description: Description of what the tool does in <%= Rails.application.name %>
-      input_schema:
-        type: object
-        properties:
-          param1:
-            type: string
-            description: Description of parameter 1
-          param2:
-            type: integer
-            description: Description of parameter 2
-          param3:
-            type: array
-            items:
+create_file 'config/mcp_tools.yml', <<~YAML
+  shared:
+    tools:
+      - name: tool_name
+        description: Description of what the tool does in <%= Rails.application.name %>
+        input_schema:
+          type: object
+          properties:
+            param1:
               type: string
-            description: Description of parameter 3
-        required:
-          - param1
-    - name: get_current_time
-      description: Get current time in a specific timezone (this is an example tool)
-      input_schema:
-        type: object
-        properties:
-          timezone:
-            type: string
-            description: IANA timezone name (e.g., 'America/New_York', 'Europe/London')
-        required:
-          - timezone
+              description: Description of parameter 1
+            param2:
+              type: integer
+              description: Description of parameter 2
+            param3:
+              type: array
+              items:
+                type: string
+              description: Description of parameter 3
+          required:
+            - param1
+      - name: get_current_time
+        description: Get current time in a specific timezone (this is an example tool)
+        input_schema:
+          type: object
+          properties:
+            timezone:
+              type: string
+              description: IANA timezone name (e.g., 'America/New_York', 'Europe/London')
+          required:
+            - timezone
 YAML
 
 # Create tools controller
-create_file 'app/controllers/api/tools_controller.rb', <<~RUBY
+create_file 'app/controllers/api/tools_controller.rb', <<~'RUBY'
   module Api
     class ToolsController < BaseController
+       class UnknownToolError < StandardError; end
+       class ToolExecutionError < StandardError; end
+
       def list
         tools = Rails.application.config_for(:mcp_tools)["tools"]
         render json: { tools: tools }
       end
 
       def call_tool
-        tool_name = tool_params[:name]
-        case tool_name
-        when "tool_name"
-          raise "Not implemented"
-          render json: { result: result }
-        when "convert_time"
-          args = tool_params[:arguments]
-          source_timezone = args[:source_timezone]
-          time = args[:time]
-          target_timezone = args[:target_timezone]
-          raise "Not implemented"
-          render json: { result: result }
-        else
-          render_error "Unknown tool: \#{tool_name}", :bad_request
-        end
+      result = execute_tool(tool_params[:name], tool_params[:arguments])
+        render_success(result: result)
+      rescue UnknownToolError => e
+        render_error(e.message, :bad_request)
+      rescue ToolExecutionError => e
+        render_error(e.message, :unprocessable_entity)
+      rescue StandardError => e
+        render_error("Internal tool execution error: #{e.message}", :internal_server_error)
       end
 
       private
 
+      def execute_tool(tool_name, arguments)
+        tool_method = "execute_#{tool_name}"
+
+        if respond_to?(tool_method, true)
+          send(tool_method, arguments)
+        else
+          raise UnknownToolError, "Unknown tool: #{tool_name}"
+        end
+      end
+
+      def render_success(data)
+        render json: data, status: :ok
+      end
+
+      def execute_tool_name(args)
+        # Implementation for tool_name
+        raise ToolExecutionError, "Tool not implemented yet"
+      end
+
       def tool_params
-        params.permit(:name, arguments: [:source_timezone, :time, :target_timezone])
+        params.permit(:name, arguments: {})
       end
     end
   end
@@ -137,7 +152,7 @@ create_file 'test/integration/tools_test.rb', <<~RUBY
     class ToolsControllerTest < ActionDispatch::IntegrationTest
       test "list returns correctly structured tools" do
         post api_tools_path
-        
+
         assert_response :success
 
         response_body = JSON.parse(response.body)
@@ -165,21 +180,21 @@ create_file 'test/integration/tools_test.rb', <<~RUBY
 RUBY
 
 create_file 'test/integration/root_test.rb', <<~RUBY
-require "test_helper"
+  require "test_helper"
 
-class RootTest < ActionDispatch::IntegrationTest
-  test "root displays application name and version" do
-    get root_path
-    
-    assert_response :no_content # 204 status
-    assert_equal 'MCP SERVER <%= Rails.application.to_s %> (<%= Rails.application.version.to_s %>)', response.body
+  class RootTest < ActionDispatch::IntegrationTest
+    test "root displays application name and version" do
+      get root_path
+
+      assert_response :no_content # 204 status
+      assert_equal 'MCP SERVER <%= Rails.application.to_s %> (<%= Rails.application.version.to_s %>)', response.body
+    end
   end
-end
 RUBY
 
-file 'VERSION', <<~RUBY
+file 'VERSION', <<~PLAIN
   0.1.0
-RUBY
+PLAIN
 
 # Setup routes
 route <<~RUBY
