@@ -94,6 +94,27 @@ create_file 'config/mcp_tools.yml', <<~YAML
             - timezone
 YAML
 
+# Create mcp prompts config
+create_file 'config/mcp_prompts.yml', <<~YAML
+  shared:
+    prompts:
+      - name: git-commit
+        description: Generate a Git commit message
+        arguments:
+          - name: changes
+            description: Git diff or description of changes
+            required: true
+      - name: explain-code
+        description: Explain how code works
+        arguments:
+          - name: code
+            description: Code to explain
+            required: true
+          - name: language
+            description: Programming language
+            required: false
+YAML
+
 # Create tools controller
 create_file 'app/controllers/api/tools_controller.rb', <<~'RUBY'
   module Api
@@ -145,6 +166,82 @@ create_file 'app/controllers/api/tools_controller.rb', <<~'RUBY'
   end
 RUBY
 
+# Create prompts controller
+create_file 'app/controllers/api/prompts_controller.rb', <<~'RUBY'
+  module Api
+    class PromptsController < BaseController
+      class UnknownPromptError < StandardError; end
+      class InvalidArgumentError < StandardError; end
+
+      def list
+        prompts = Rails.application.config_for(:mcp_prompts)["prompts"]
+        render json: { prompts: prompts }
+      end
+
+      def get
+        prompt = find_prompt(prompt_params[:name])
+        validate_arguments!(prompt, prompt_params[:arguments])
+
+        messages = generate_messages(prompt, prompt_params[:arguments])
+        render json: { messages: messages }
+      rescue UnknownPromptError, InvalidArgumentError => e
+        render_error(e.message, :bad_request)
+      rescue StandardError => e
+        render_error("Internal prompt execution error: #{e.message}", :internal_server_error)
+      end
+
+      private
+
+      def find_prompt(name)
+        prompts = Rails.application.config_for(:mcp_prompts)["prompts"]
+        prompt = prompts.find { |p| p["name"] == name }
+        raise UnknownPromptError, "Unknown prompt: #{name}" unless prompt
+
+        prompt
+      end
+
+      def validate_arguments!(prompt, provided_arguments)
+        required_args = prompt["arguments"]&.select { |arg| arg["required"] }&.map { |arg| arg["name"] } || []
+        
+        missing_args = required_args - (provided_arguments&.keys || [])
+        raise InvalidArgumentError, "Missing required arguments: #{missing_args.join(', ')}" if missing_args.any?
+      end
+
+      def generate_messages(prompt, arguments)
+        case prompt["name"]
+        when "git-commit"
+          [
+            {
+              role: "user",
+              content: {
+                type: "text",
+                text: "Generate a concise but descriptive commit message for these changes:\n\n#{arguments['changes']}"
+              }
+            }
+          ]
+        when "explain-code"
+          language = arguments["language"] || "Unknown"
+          [
+            {
+              role: "user",
+              content: {
+                type: "text",
+                text: "Explain how this #{language} code works:\n\n#{arguments['code']}"
+              }
+            }
+          ]
+        else
+          raise UnknownPromptError, "Prompt implementation not found for: #{prompt['name']}"
+        end
+      end
+
+      def prompt_params
+        params.permit(:name, arguments: {})
+      end
+    end
+  end
+RUBY
+
 create_file 'test/integration/tools_test.rb', <<~RUBY
   require "test_helper"
 
@@ -179,6 +276,70 @@ create_file 'test/integration/tools_test.rb', <<~RUBY
   end
 RUBY
 
+create_file 'test/integration/prompts_test.rb', <<~RUBY
+  require "test_helper"
+
+  module Api
+    class PromptsControllerTest < ActionDispatch::IntegrationTest
+      test "list returns correctly structured prompts" do
+        post api_prompts_path
+
+        assert_response :success
+
+        response_body = JSON.parse(response.body)
+        prompts = response_body["prompts"]
+
+        assert_equal 2, prompts.length
+
+        prompts.each do |prompt|
+          assert_includes prompt.keys, "name"
+          assert_includes prompt.keys, "description"
+          assert_includes prompt.keys, "arguments"
+        end
+      end
+
+      test "get returns correct message structure for git-commit" do
+        post api_get_prompt_path, params: {
+          name: "git-commit",
+          arguments: {
+            changes: "Added new feature X"
+          }
+        }
+
+        assert_response :success
+
+        response_body = JSON.parse(response.body)
+        messages = response_body["messages"]
+
+        assert_equal 1, messages.length
+        assert_equal "user", messages[0]["role"]
+        assert_equal "text", messages[0]["content"]["type"]
+        assert_includes messages[0]["content"]["text"], "Added new feature X"
+      end
+
+      test "get returns error for unknown prompt" do
+        post api_get_prompt_path, params: {
+          name: "unknown-prompt",
+          arguments: {}
+        }
+
+        assert_response :bad_request
+        assert_includes JSON.parse(response.body)["error"], "Unknown prompt"
+      end
+
+      test "get returns error for missing required arguments" do
+        post api_get_prompt_path, params: {
+          name: "git-commit",
+          arguments: {}
+        }
+
+        assert_response :bad_request
+        assert_includes JSON.parse(response.body)["error"], "Missing required arguments"
+      end
+    end
+  end
+RUBY
+
 create_file 'test/integration/root_test.rb', <<~RUBY
   require "test_helper"
 
@@ -201,6 +362,8 @@ route <<~RUBY
   namespace :api do
     post '/tools', to: 'tools#list'
     post '/call_tool', to: 'tools#call_tool'
+    post '/prompts', to: 'prompts#list'
+    post '/get_prompt', to: 'prompts#get'
   end
 RUBY
 
