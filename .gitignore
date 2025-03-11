@@ -1,0 +1,5 @@
+/config/credentials.yml.enc
+/config/master.key
+/log/
+/tmp/
+/.env

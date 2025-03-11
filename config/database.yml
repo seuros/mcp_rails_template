@@ -1,0 +1,35 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  username: <%= ENV.fetch("DB_USER") { "postgres" } %>
+  password: <%= ENV.fetch("DB_PASSWORD") { "ubuntu" } %>
+
+development:
+  <<: *default
+  database: my_mcp_app_development
+
+test:
+  <<: *default
+  database: my_mcp_app_test
+
+production:
+  primary: &primary_production
+    <<: *default
+    database: my_mcp_app_production
+    username: my_mcp_app
+    password: <%= ENV["MY_MCP_APP_DATABASE_PASSWORD"] %>
+  cache:
+    <<: *primary_production
+    database: my_mcp_app_production_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_production
+    database: my_mcp_app_production_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_production
+    database: my_mcp_app_production_cable
+    migrations_paths: db/cable_migrate
