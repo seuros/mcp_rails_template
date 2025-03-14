@@ -25,15 +25,15 @@ class RubocopTool < ApplicationTool
 
       # Build the output from the offenses.
       if investigation.offenses.empty?
-        render_text("No offenses detected.")
+        render text: "No offenses detected."
       else
         output = investigation.offenses.map do |offense|
           "#{offense.cop_name}: #{offense.message}\nLine: #{offense.location.line}, Column: #{offense.location.column}"
         end.join("\n\n")
-        render_text(output)
+        render text: output
       end
     rescue => e
-      render_text("An error occurred while running RuboCop: #{e.message}")
+      render error: "An error occurred while running RuboCop: #{e.message}"
     end
   end
 end
