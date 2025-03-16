@@ -21,7 +21,7 @@ GEM
       activesupport (= 8.0.2)
       mail (>= 2.8.0)
       rails-dom-testing (~> 2.2)
-    actionmcp (0.8.0)
+    actionmcp (0.13.0)
       actioncable (>= 8.0.1)
       activerecord (>= 8.0.1)
       faraday (~> 2.0)
@@ -108,6 +108,7 @@ GEM
       logger
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
+    foreman (0.88.1)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -250,7 +251,7 @@ GEM
       rubocop-ast (>= 1.38.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.38.1)
+    rubocop-ast (1.39.0)
       parser (>= 3.3.1.0)
     rubocop-performance (1.24.0)
       lint_roller (~> 1.1)
@@ -327,10 +328,11 @@ DEPENDENCIES
   bootsnap
   brakeman
   debug
+  foreman
   kamal
   pg
   puma (>= 5.0)
-  rails (~> 8.0.1)
+  rails (~> 8.0.2)
   rubocop-rails-omakase
   solid_cable
   solid_cache
