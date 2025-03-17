@@ -21,7 +21,7 @@ GEM
       activesupport (= 8.0.2)
       mail (>= 2.8.0)
       rails-dom-testing (~> 2.2)
-    actionmcp (0.13.0)
+    actionmcp (0.14.0)
       actioncable (>= 8.0.1)
       activerecord (>= 8.0.1)
       faraday (~> 2.0)
