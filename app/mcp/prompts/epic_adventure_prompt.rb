@@ -43,4 +43,3 @@ class EpicAdventurePrompt < ApplicationMCPPrompt
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
   end
 end
-

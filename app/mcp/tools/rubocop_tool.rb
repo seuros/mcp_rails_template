@@ -31,7 +31,7 @@ class RubocopTool < ApplicationMCPTool
         end
       end
     rescue => e
-      render(error: ["An error occurred while running RuboCop: #{e.message}"])
+      render(text: "An error occurred while running RuboCop: #{e.message}")
     end
   end
 end
