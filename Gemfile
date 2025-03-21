@@ -43,3 +43,6 @@ end
 
 # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
 gem "rubocop-rails-omakase", require: false
+
+gem "ruby-lsp", "~> 0.23.12"
+gem "ruby-lsp-rails", "~> 0.4.0"
