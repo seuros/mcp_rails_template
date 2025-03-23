@@ -443,7 +443,7 @@ class RubyCodeAnalyzerTool < ApplicationMCPTool
 
       lines[start_line..end_line].join
     rescue => e
-      render(text: "# Error fetching source: #{e.message}" )
+      render(text: "# Error fetching source: #{e.message}")
     end
   end
 

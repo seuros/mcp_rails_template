@@ -5,7 +5,7 @@ class EpicAdventurePrompt < ApplicationMCPPrompt
 
   argument :hero_name, description: "The name of the brave protagonist", required: true
   argument :adventure_type, description: "Type of adventure: fantasy, sci-fi, or mystery", required: true, enum: %w[fantasy sci-fi mystery]
-  argument :include_art, description: "Include visual art for key scenes", required: false, default: false
+  argument :include_art, type: :boolean, description: "Include visual art for key scenes", required: false, default: false
 
   def perform
     # Introduction message with a dynamic greeting.
