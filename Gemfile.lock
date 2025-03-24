@@ -21,10 +21,9 @@ GEM
       activesupport (= 8.0.2)
       mail (>= 2.8.0)
       rails-dom-testing (~> 2.2)
-    actionmcp (0.20.0)
+    actionmcp (0.24.0)
       actioncable (>= 8.0.1)
       activerecord (>= 8.0.1)
-      faraday (~> 2.0)
       multi_json
       railties (>= 8.0.1)
       zeitwerk (~> 2.6)
@@ -102,12 +101,6 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
-    faraday (2.12.2)
-      faraday-net_http (>= 2.0, < 3.5)
-      json
-      logger
-    faraday-net_http (3.4.0)
-      net-http (>= 0.5.0)
     foreman (0.88.1)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
@@ -149,8 +142,6 @@ GEM
     minitest (5.25.5)
     msgpack (1.8.0)
     multi_json (1.15.0)
-    net-http (0.6.0)
-      uri
     net-imap (0.5.6)
       date
       net-protocol
@@ -236,9 +227,9 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.2.1)
-    rbs (3.9.0)
+    rbs (3.9.1)
       logger
-    rdoc (6.12.0)
+    rdoc (6.13.0)
       psych (>= 4.0.0)
     regexp_parser (2.10.0)
     reline (0.6.0)
