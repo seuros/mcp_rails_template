@@ -8,3 +8,7 @@ down:
 
 clean: down
 	docker-compose rm -f
+
+run: up
+	bundle install
+	foreman s

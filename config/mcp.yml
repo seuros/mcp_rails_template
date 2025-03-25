@@ -1,0 +1,32 @@
+shared:
+  primary:
+    tools:
+      - all
+    prompts:
+      - all
+    resources:
+      - all
+    options:
+      list_changed: false
+      resources_subscribe: false
+
+  writer:
+    tools: []
+    prompts:
+      - all
+    resources: []
+    options:
+      list_changed: false
+      resources_subscribe: false
+
+  dev:
+    tools:
+      - dependency_info
+      - rubocop
+      - ruby_code_analyser
+    prompts:
+    resources:
+      - gemfile
+    options:
+      list_changed: false
+      resources_subscribe: false
