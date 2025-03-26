@@ -1,6 +1,19 @@
 # This docker will spin up a container with a postgres database.
 
 services:
+  app:
+    container_name: mcp_app
+    build: .
+    command: ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3077"]
+    volumes:
+      - .:/app
+    ports: [ "3077:3077" ]
+    depends_on: [ db ]
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: ubuntu
   db:
     container_name: mcp_app_db
     image: "ghcr.io/seuros/postgis-with-extensions:17-4"

@@ -2,12 +2,26 @@
 
 # Enable jemalloc for reduced memory usage and latency.
 if [ -z "${LD_PRELOAD+x}" ]; then
-    LD_PRELOAD=$(find /usr/lib -name libjemalloc.so.2 -print -quit)
-    export LD_PRELOAD
+  LD_PRELOAD=$(find /usr/lib -name libjemalloc.so.2 -print -quit)
+  export LD_PRELOAD
+fi
+
+# Generate SECRET_KEY_BASE if not provided
+if [ -z "${SECRET_KEY_BASE}" ]; then
+  echo "SECRET_KEY_BASE not provided, generating one..."
+  export SECRET_KEY_BASE=$(bundle exec rails secret)
+  echo "Generated SECRET_KEY_BASE for this session"
+fi
+
+# Check for RAILS_MASTER_KEY
+if [ -z "${RAILS_MASTER_KEY}" ] && [ ! -f config/master.key ]; then
+  echo "Warning: RAILS_MASTER_KEY environment variable not set and config/master.key not found."
+  echo "Some Rails functionality may not work correctly."
 fi
 
 # If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+if [[ "$1" == "./bin/rails" && "$2" == "server" ]]; then
+  echo "Preparing database..."
   ./bin/rails db:prepare
 fi
 
