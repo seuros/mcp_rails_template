@@ -45,4 +45,4 @@ end
 gem "rubocop-rails-omakase", require: false
 
 gem "ruby-lsp", "~> 0.23.14"
-gem "ruby-lsp-rails", "~> 0.4.0"
+gem "ruby-lsp-rails", "~> 0.4.1"
