@@ -43,3 +43,5 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+/.env.example
+/nginx.conf

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_16_170954) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_15_170848) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,7 +19,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_16_170954) do
     t.string "direction", default: "client", null: false, comment: "The message recipient"
     t.string "message_type", null: false, comment: "The type of the message"
     t.string "jsonrpc_id"
-    t.string "message_text"
     t.jsonb "message_json"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -65,6 +64,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_16_170954) do
     t.integer "messages_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sse_event_counter", default: 0, null: false
+    t.jsonb "tool_registry", default: []
+    t.jsonb "prompt_registry", default: []
+    t.jsonb "resource_registry", default: []
+  end
+
+  create_table "action_mcp_sse_events", force: :cascade do |t|
+    t.string "session_id", null: false
+    t.integer "event_id", null: false
+    t.text "data", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_action_mcp_sse_events_on_created_at"
+    t.index ["session_id", "event_id"], name: "index_action_mcp_sse_events_on_session_id_and_event_id", unique: true
+    t.index ["session_id"], name: "index_action_mcp_sse_events_on_session_id"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -212,6 +226,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_16_170954) do
   add_foreign_key "action_mcp_session_messages", "action_mcp_sessions", column: "session_id", name: "fk_action_mcp_session_messages_session_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "action_mcp_session_resources", "action_mcp_sessions", column: "session_id", on_delete: :cascade
   add_foreign_key "action_mcp_session_subscriptions", "action_mcp_sessions", column: "session_id", on_delete: :cascade
+  add_foreign_key "action_mcp_sse_events", "action_mcp_sessions", column: "session_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

@@ -1,11 +1,17 @@
 source "https://rubygems.org"
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.2"
-# Use sqlite3 as the database for Active Record
+# Use ActiveRecord for database ORM and Railties for the framework's core
+gem "activerecord", "~> 8.0.2"
+gem "railties", "~> 8.0.2"
+
+# Support for controller actions
+gem "actionview", "~> 8.0.2"
+gem "activejob", "~> 8.0.2"
+
+# Use PostgreSQL as the database for Active Record
 gem "pg"
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
+gem "puma"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -44,5 +50,6 @@ end
 # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
 gem "rubocop-rails-omakase", require: false
 
-gem "ruby-lsp", "~> 0.23.14"
-gem "ruby-lsp-rails", "~> 0.4.0"
+# Ruby language server support
+gem "ruby-lsp"
+gem "ruby-lsp-rails"

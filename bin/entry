@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+
+# Continue with setup
+apt-get update -qq && apt-get install -y --no-install-recommends \
+  libpq-dev libvips build-essential git curl postgresql-client
+
+gem install bundler -v "~>2.5" --no-document
+bundle install
+
+echo "== Waiting for Postgres at db:5432..."
+until pg_isready -h db -p 5432 -U mcp > /dev/null 2>&1; do
+  echo "Waiting for db..."
+  sleep 1
+done
+echo "✅ Postgres is ready"
+
+export SECRET_KEY_BASE=${SECRET_KEY_BASE:-$(bundle exec rails secret)}
+bundle exec rails db:prepare
+
+exec foreman start

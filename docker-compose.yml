@@ -1,24 +1,38 @@
-# This docker will spin up a container with a postgres database.
-
 services:
   app:
-    container_name: mcp_app
-    build: .
-    command: ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3077"]
+    container_name: mcp_app_${USER}
+    image: ruby:3.4.3
+    command: ["./bin/entry"]
+    working_dir: /app
     volumes:
       - .:/app
-    ports: [ "3077:3077" ]
-    depends_on: [ db ]
+    ports:
+      - "3002:3002"  # web port in Procfile
+      - "62770:62770"  # mcp port in Procfile
+    depends_on:
+      - db
     environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: ubuntu
+      DATABASE_URL: postgresql://mcp:ubuntu@db:5432/my_mcp_app_development
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   db:
-    container_name: mcp_app_db
-    image: "ghcr.io/seuros/postgis-with-extensions:17-4"
+    container_name: mcp_app_db_${USER}
+    image: ghcr.io/seuros/postgis-with-extensions:17-4
     environment:
-      POSTGRES_USER: ubuntu
+      POSTGRES_USER: mcp
       POSTGRES_PASSWORD: ubuntu
       POSTGRES_DB: my_mcp_app_development
-    ports: [ "5466:5432" ]
+
+  nginx:
+    container_name: mcp_nginx_${USER}
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
