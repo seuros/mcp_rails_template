@@ -13,17 +13,17 @@ class JudgeMyLunchTool < ApplicationMCPTool
 
   def perform
     feedback = case lunch.downcase
-               when /tofu/, /tempeh/, /quinoa/, /seitan/, /lentil/
+    when /tofu/, /tempeh/, /quinoa/, /seitan/, /lentil/
                  "Detected vegan meal. Congratulations on mastering the art of eating things that taste like moral superiority."
-               when /kale/
+    when /kale/
                  "Detected kale. Bonus points for chewing through disappointment like a champion."
-               when /chicken/, /steak/, /burger/
+    when /chicken/, /steak/, /burger/
                  "Detected protein-based decision. Nature is healing (and sizzling)."
-               when /pizza/
+    when /pizza/
                  "Detected pizza. Emotionally safe, nutritionally chaotic."
-               else
+    else
                  "Unclassified lunch item. Either highly experimental or a cry for help."
-               end
+    end
 
     render(text: "🍽️ Lunch report: '#{lunch}'\n💬 Commentary: #{feedback}")
   end
