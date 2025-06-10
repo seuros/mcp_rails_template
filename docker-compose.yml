@@ -1,7 +1,7 @@
 services:
   app:
     container_name: mcp_app_${USER}
-    image: ruby:3.4.3
+    image: ruby:3.4.4
     command: ["./bin/entry"]
     working_dir: /app
     volumes:
@@ -23,6 +23,8 @@ services:
       POSTGRES_USER: mcp
       POSTGRES_PASSWORD: ubuntu
       POSTGRES_DB: my_mcp_app_development
+    ports:
+      - "5466:5432"  # Postgres port
 
   nginx:
     container_name: mcp_nginx_${USER}

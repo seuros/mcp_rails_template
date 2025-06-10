@@ -1,32 +1,98 @@
+# ActionMCP Configuration
+# This file contains configuration for the ActionMCP server including
+# authentication, profiles, and pub/sub system settings.
+
 shared:
-  primary:
-    tools:
-      - all
-    prompts:
-      - all
-    resources:
-      - all
-    options:
-      list_changed: false
-      resources_subscribe: false
+  # Authentication configuration - array of methods to try in order
+  authentication: ["none"]  # No authentication required by default
+  
+  # OAuth configuration (if using OAuth authentication)
+  # oauth:
+  #   provider: "demo_oauth_provider"
+  #   scopes_supported: ["mcp:tools", "mcp:resources", "mcp:prompts"]
+  #   enable_dynamic_registration: true
+  #   enable_token_revocation: true
+  #   pkce_required: true
+  #   issuer_url: https://yourapp.com
+  
+  # MCP capability profiles
+  profiles:
+    primary:
+      tools:
+        - all
+      prompts:
+        - all
+      resources:
+        - all
+      options:
+        list_changed: false
+        logging_enabled: true
+        resources_subscribe: false
+        
+    minimal:
+      tools: []
+      prompts: []
+      resources: []
+      options:
+        list_changed: false
+        logging_enabled: false
+        logging_level: warn
+        resources_subscribe: false
 
-  writer:
-    tools: []
-    prompts:
-      - all
-    resources: []
-    options:
-      list_changed: false
-      resources_subscribe: false
+# Development environment
+development:
+  # Use simple pub/sub adapter for development
+  adapter: simple
+  # Thread pool configuration (optional)
+  # min_threads: 5     # Minimum number of threads in the pool
+  # max_threads: 10    # Maximum number of threads in the pool
+  # max_queue: 100     # Maximum number of tasks that can be queued
 
-  dev:
-    tools:
-      - dependency_info
-      - rubocop
-      - ruby_code_analyser
-    prompts:
-    resources:
-      - gemfile
-    options:
-      list_changed: false
-      resources_subscribe: false
+# Test environment
+test:
+  # JWT authentication for testing environment
+  authentication: ["jwt"]
+  
+  # Test adapter for testing
+  adapter: test
+
+# Production environment
+production:
+  # Multiple authentication methods - try OAuth first, fallback to JWT
+  authentication: ["oauth", "jwt"]
+  
+  # OAuth configuration for production
+  oauth:
+    provider: "application_oauth_provider"  # Your custom provider class
+    scopes_supported: ["mcp:tools", "mcp:resources", "mcp:prompts"]
+    enable_dynamic_registration: true
+    enable_token_revocation: true
+    pkce_required: true
+    issuer_url: https://yourapp.com
+  
+  # Additional production profiles for external clients
+  profiles:
+    external_clients:
+      tools: ["WeatherForecastTool"]  # Limited tool access for external clients
+      prompts: []
+      resources: []
+  
+  # Choose one of the following adapters:
+  
+  # 1. Database-backed adapter (recommended)
+  adapter: solid_cable
+  polling_interval: 0.5.seconds
+  # connects_to: cable  # Optional: specify a different database connection
+  
+  # Thread pool configuration (optional)
+  min_threads: 10     # Minimum number of threads in the pool
+  max_threads: 20     # Maximum number of threads in the pool
+  max_queue: 500      # Maximum number of tasks that can be queued
+
+  # 2. Redis-backed adapter (alternative)
+  # adapter: redis
+  # url: redis://localhost:6379/1
+  # channel_prefix: my_mcp_app_production
+  # min_threads: 10    # Minimum number of threads in the pool
+  # max_threads: 20    # Maximum number of threads in the pool
+  # max_queue: 500     # Maximum number of tasks that can be queued
