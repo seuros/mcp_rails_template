@@ -5,7 +5,7 @@
 shared:
   # Authentication configuration - array of methods to try in order
   authentication: ["none"]  # No authentication required by default
-  
+
   # OAuth configuration (if using OAuth authentication)
   # oauth:
   #   provider: "demo_oauth_provider"
@@ -14,7 +14,7 @@ shared:
   #   enable_token_revocation: true
   #   pkce_required: true
   #   issuer_url: https://yourapp.com
-  
+
   # MCP capability profiles
   profiles:
     primary:
@@ -28,7 +28,7 @@ shared:
         list_changed: false
         logging_enabled: true
         resources_subscribe: false
-        
+
     minimal:
       tools: []
       prompts: []
@@ -52,7 +52,7 @@ development:
 test:
   # JWT authentication for testing environment
   authentication: ["jwt"]
-  
+
   # Test adapter for testing
   adapter: test
 
@@ -60,7 +60,7 @@ test:
 production:
   # Multiple authentication methods - try OAuth first, fallback to JWT
   authentication: ["oauth", "jwt"]
-  
+
   # OAuth configuration for production
   oauth:
     provider: "application_oauth_provider"  # Your custom provider class
@@ -69,21 +69,20 @@ production:
     enable_token_revocation: true
     pkce_required: true
     issuer_url: https://yourapp.com
-  
+
   # Additional production profiles for external clients
   profiles:
     external_clients:
       tools: ["WeatherForecastTool"]  # Limited tool access for external clients
       prompts: []
       resources: []
-  
+
   # Choose one of the following adapters:
-  
+
   # 1. Database-backed adapter (recommended)
-  adapter: solid_cable
+  adapter: solid_mcp
   polling_interval: 0.5.seconds
-  # connects_to: cable  # Optional: specify a different database connection
-  
+
   # Thread pool configuration (optional)
   min_threads: 10     # Minimum number of threads in the pool
   max_threads: 20     # Maximum number of threads in the pool
