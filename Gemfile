@@ -1,12 +1,12 @@
 source "https://rubygems.org"
 
 # Use ActiveRecord for database ORM and Railties for the framework's core
-gem "activerecord", "~> 8.0.2"
-gem "railties", "~> 8.0.2"
+gem "activerecord", ENV.fetch("RAILS_VERSION", ">= 8.0.4")
+gem "railties", ENV.fetch("RAILS_VERSION", ">= 8.0.4")
 
 # Support for controller actions
-gem "actionview", "~> 8.0.2"
-gem "activejob", "~> 8.0.2"
+gem "actionview", ENV.fetch("RAILS_VERSION", ">= 8.0.4")
+gem "activejob", ENV.fetch("RAILS_VERSION", ">= 8.0.4")
 
 # Use PostgreSQL as the database for Active Record
 gem "pg"
@@ -21,7 +21,11 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
-gem "actionmcp"
+gem "actionmcp", "~> 0.83"
+gem "solid_mcp", "~> 0.2"
+
+# Use bcrypt for has_secure_password
+gem "bcrypt", "~> 3.1.7"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
