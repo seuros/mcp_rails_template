@@ -1,40 +1,42 @@
 # frozen_string_literal: true
 
+# Example ApplicationGateway showing modern GatewayIdentifier API
+#
+# This gateway uses the NoneIdentifier for development (no authentication required).
+# For production, implement custom identifiers like ApiKeyIdentifier or JwtIdentifier.
+#
+# Example custom identifier:
+#
+#   class MyCustomIdentifier < ActionMCP::GatewayIdentifier
+#     def self.auth_method
+#       :my_auth
+#     end
+#
+#     def resolve
+#       # Your authentication logic here
+#       extract_api_key || raise Unauthorized, "Missing API key"
+#     end
+#
+#     private
+#
+#     def extract_api_key
+#       request.headers["X-API-Key"]
+#     end
+#   end
+
 class ApplicationGateway < ActionMCP::Gateway
-  # Specify what attributes identify a connection
-  # Multiple identifiers can be used (e.g., user, account, organization)
-  identified_by :user
+  # Configure which authentication identifiers this gateway accepts
+  # For development, use NoneIdentifier (no authentication required)
+  # For production, use ApiKeyIdentifier, JwtIdentifier, or custom identifiers
+  identified_by ActionMCP::NoneIdentifier
 
-  protected
-
-  # Override this method to implement your authentication logic
-  # Must return a hash with keys matching the identified_by attributes
-  # or raise ActionMCP::UnauthorizedError
-  def authenticate!
-    # Example using JWT:
-    token = extract_bearer_token
-    raise ActionMCP::UnauthorizedError, "Missing token" unless token
-
-    payload = ActionMCP::JwtDecoder.decode(token)
-    user = resolve_user(payload)
-
-    raise ActionMCP::UnauthorizedError, "Unauthorized" unless user
-
-    # Return a hash with all identified_by attributes
-    { user: user }
-  rescue ActionMCP::JwtDecoder::DecodeError => e
-    raise ActionMCP::UnauthorizedError, e.message
-  end
-
-  private
-
-  # Example method to resolve user from JWT payload
-  def resolve_user(payload)
-    return nil unless payload.is_a?(Hash)
-    user_id = payload["user_id"] || payload["sub"]
-    return nil unless user_id
-
-    # Replace with your User model lookup
-    User.find_by(id: user_id)
+  # Optional: Override apply_profile_from_authentication to switch profiles based on user
+  def apply_profile_from_authentication(identities)
+    # Example: Switch to minimal profile for non-admin users
+    # if identities[:user]&.admin?
+    #   use_profile(:admin)
+    # else
+    #   use_profile(:minimal)
+    # end
   end
 end

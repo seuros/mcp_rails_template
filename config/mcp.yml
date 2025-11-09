@@ -41,6 +41,9 @@ shared:
 
 # Development environment
 development:
+  # Configure the gateway class for authentication
+  gateway_class: "ApplicationGateway"
+
   # Use simple pub/sub adapter for development
   adapter: simple
   # Thread pool configuration (optional)
