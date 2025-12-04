@@ -22,7 +22,7 @@ gem "solid_queue"
 gem "solid_cable"
 
 gem "actionmcp", "~> 0.83"
-gem "solid_mcp", "~> 0.2"
+gem "solid_mcp", "~> 0.5"
 
 # Use bcrypt for has_secure_password
 gem "bcrypt", "~> 3.1.7"
