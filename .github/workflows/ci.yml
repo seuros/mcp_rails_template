@@ -5,6 +5,9 @@ on:
   push:
     branches: [ master ]
 
+env:
+  BUNDLE_FORCE_RUBY_PLATFORM: "true"
+
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
