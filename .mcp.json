@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "mcp_rails_template": {
+      "type": "http",
+      "url": "http://localhost:8080/mcp",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNDk2MTc4MDAiLCJ1c2VyX2lkIjoxNDk2MTc4MDAsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MjA4MDk1MDA3NCwiaWF0IjoxNzY1NDI0MTQ3fQ.usOBXbmnWASRh0igoP__kFnn4LUw-4QyPPNDZWEJryA"
+      }
+    }
+  }
+}

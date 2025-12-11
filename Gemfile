@@ -1,40 +1,39 @@
 source "https://rubygems.org"
 
 # Use ActiveRecord for database ORM and Railties for the framework's core
-gem "activerecord", ENV.fetch("RAILS_VERSION", ">= 8.0.4")
-gem "railties", ENV.fetch("RAILS_VERSION", ">= 8.0.4")
+gem "activerecord", ENV.fetch("RAILS_VERSION", "~> 8.1.0")
+gem "railties", ENV.fetch("RAILS_VERSION", "~> 8.1.0")
 
 # Support for controller actions
-gem "actionview", ENV.fetch("RAILS_VERSION", ">= 8.0.4")
-gem "activejob", ENV.fetch("RAILS_VERSION", ">= 8.0.4")
+gem "actionview", ENV.fetch("RAILS_VERSION", "~> 8.1.0")
+gem "activejob", ENV.fetch("RAILS_VERSION", "~> 8.1.0")
 
 # Use PostgreSQL as the database for Active Record
 gem "pg"
-# Use the Puma web server [https://github.com/puma/puma]
-gem "puma"
+# Use Falcon for web and MCP server (better for streaming/async)
+gem "falcon"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+# Use the database-backed adapters for Rails.cache and Action Cable
 gem "solid_cache"
-gem "solid_queue"
 gem "solid_cable"
 
-gem "actionmcp", "~> 0.83"
-gem "solid_mcp", "~> 0.2"
+gem "actionmcp"
+gem "solid_mcp", "~> 0.5"
 
 # Use bcrypt for has_secure_password
 gem "bcrypt", "~> 3.1.7"
+
+# JWT for authentication tokens
+gem "jwt", "~> 2.10"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
 gem "kamal", require: false
-
-# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
-gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"

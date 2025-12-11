@@ -2,15 +2,18 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  url: <%= ENV.fetch("DATABASE_URL") { "postgresql://localhost:5432" } %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", "5432") %>
+  username: <%= ENV.fetch("DB_USER", "postgres") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "") %>
 
 development:
   <<: *default
-  database: my_mcp_app_development
+  database: <%= ENV.fetch("DB_NAME", "my_mcp_app_development") %>
 
 test:
   <<: *default
-  database: my_mcp_app_test
+  database: <%= ENV.fetch("DB_NAME", "my_mcp_app_test") %>
 
 production:
   primary: &primary_production

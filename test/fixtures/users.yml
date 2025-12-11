@@ -1,0 +1,17 @@
+# frozen_string_literal: true
+
+test_user:
+  email: test@example.com
+  name: Test User
+  password_digest: $2a$12$MRuQFj/ehhRcjWci/hFbMecrgfBgsiaX7.Dzs.7PON75Q0s63.dBq
+  api_token: <%= SecureRandom.hex(32) %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+admin_user:
+  email: admin@example.com
+  name: Admin User
+  password_digest: $2a$12$MRuQFj/ehhRcjWci/hFbMecrgfBgsiaX7.Dzs.7PON75Q0s63.dBq
+  api_token: <%= SecureRandom.hex(32) %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

@@ -1,6 +1,6 @@
 # Action MCP Example 🚀
 
-A simple Ruby on Rails application demonstrating how to integrate and use the **ActionMCP** gem. The gem source code can be found on GitHub at [https://github.com/seuros/action_mcp](https://github.com/seuros/action_mcp).
+A simple Ruby on Rails application demonstrating how to integrate and use the **ActionMCP** gem. The gem source code can be found on GitHub at [https://github.com/seuros/mcp](https://github.com/seuros/mcp).
 
 This application showcases how to define and use MCP components within a Rails project.
 
@@ -57,9 +57,83 @@ The app will be available at [http://localhost:3002](http://localhost:3002).
 
 ---
 
-## ActionMCP Engine
+## ActionMCP Server
 
-The **ActionMCP** engine is mounted at `/action_mcp`. Feel free to mount it at a custom location by modifying the routes in your application.
+ActionMCP runs as a **standalone server** on port `62770` (via `mcp.ru`). Nginx proxies `/mcp` requests to this server.
+
+```
+Client → nginx:8080/mcp → ActionMCP:62770
+```
+
+---
+
+## Authentication
+
+This application uses JWT-based authentication via the `ApplicationGateway` class.
+
+### Test Users (from fixtures)
+
+| Email | Password | Role |
+|-------|----------|------|
+| test@example.com | password123 | Test User |
+| admin@example.com | password123 | Admin User |
+
+### Loading Fixtures
+
+```bash
+bin/rails db:fixtures:load FIXTURES=users
+```
+
+### Generating a JWT Token
+
+```ruby
+# In Rails console
+user = User.find_by(email: 'test@example.com')
+token = user.generate_jwt(expires_in: 10.years)  # Long-lived for demo
+```
+
+### MCP Client Configuration
+
+A `.mcp.json` file is provided with a pre-configured long-lived token:
+
+```json
+{
+  "mcpServers": {
+    "mcp_rails_template": {
+      "url": "http://localhost:8080/mcp",
+      "headers": {
+        "Authorization": "Bearer <token>"
+      }
+    }
+  }
+}
+```
+
+Or test manually with curl:
+
+```bash
+curl -H "Authorization: Bearer <token>" http://localhost:8080/mcp
+```
+
+### Gateway Configuration
+
+The gateway is configured in `config/mcp.yml`:
+
+```yaml
+development:
+  authentication: ["jwt"]
+  gateway_class: "ApplicationGateway"
+```
+
+### Accessing User in Tools
+
+```ruby
+class MyTool < ApplicationMCPTool
+  def perform
+    render text: "Hello #{current_user.name}!"
+  end
+end
+```
 
 ---
 
@@ -91,10 +165,10 @@ Tools define specific actions that a language model can request to be executed.
 To test and inspect MCP functionality interactively, you can use the MCP Inspector:
 
 ```bash
-npx @modelcontextprotocol/inspector --url http://localhost:3002/action_mcp
+npx @modelcontextprotocol/inspector --url http://localhost:8080/mcp
 ```
 
-Make sure your Rails server (`bin/rails s`) is running before executing the inspector command.
+Make sure Docker is running (`docker compose up`) before executing the inspector command.
 
 ---
 

@@ -1,7 +1,7 @@
 services:
   app:
     container_name: mcp_app_${USER}
-    image: ruby:3.4.7
+    image: ruby:3.4
     command: ["./bin/entry"]
     working_dir: /app
     volumes:
@@ -12,13 +12,21 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://mcp:ubuntu@db:5432/my_mcp_app_development
+      RAILS_ENV: production
+      DATABASE_URL: postgresql://mcp:ubuntu@db:5432/my_mcp_app_production
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: my_mcp_app_production
+      DB_USER: mcp
+      DB_PASSWORD: ubuntu
+      SECRET_KEY_BASE: "dev_secret_key_base_for_testing_only_not_for_real_production"
+      ACTION_MCP_JWT_SECRET: "development-secret-key-change-in-production"
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
   db:
     container_name: mcp_app_db_${USER}
-    image: ghcr.io/seuros/postgis-with-extensions:17-4
+    image: ghcr.io/seuros/postgis-with-extensions:18
     environment:
       POSTGRES_USER: mcp
       POSTGRES_PASSWORD: ubuntu

@@ -41,8 +41,17 @@ shared:
 
 # Development environment
 development:
+  # JWT authentication for development
+  authentication: ["jwt"]
+
   # Configure the gateway class for authentication
   gateway_class: "ApplicationGateway"
+
+  # Use database-backed session store
+  session_store_type: active_record
+
+  # Connect ActionMCP models to the primary database
+  connects_to: primary
 
   # Use simple pub/sub adapter for development
   adapter: simple

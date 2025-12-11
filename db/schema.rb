@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_03_144422) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_11_022036) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,9 +51,33 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_144422) do
     t.index ["session_id"], name: "index_action_mcp_session_subscriptions_on_session_id"
   end
 
+  create_table "action_mcp_session_tasks", id: :string, force: :cascade do |t|
+    t.json "continuation_state", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "last_step_at"
+    t.datetime "last_updated_at", null: false
+    t.integer "poll_interval", comment: "Suggested polling interval in milliseconds"
+    t.string "progress_message"
+    t.integer "progress_percent"
+    t.string "request_method", comment: "e.g., tools/call, prompts/get"
+    t.string "request_name", comment: "e.g., tool name, prompt name"
+    t.json "request_params", comment: "Original request params"
+    t.json "result_payload", comment: "Final result data"
+    t.string "session_id", null: false
+    t.string "status", default: "working", null: false
+    t.string "status_message"
+    t.integer "ttl", comment: "Time to live in milliseconds"
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_action_mcp_session_tasks_on_created_at"
+    t.index ["session_id", "status"], name: "index_action_mcp_session_tasks_on_session_id_and_status"
+    t.index ["session_id"], name: "index_action_mcp_session_tasks_on_session_id"
+    t.index ["status"], name: "index_action_mcp_session_tasks_on_status"
+  end
+
   create_table "action_mcp_sessions", id: :string, force: :cascade do |t|
     t.jsonb "client_capabilities", comment: "The capabilities of the client"
     t.jsonb "client_info", comment: "The information about the client"
+    t.json "consents", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "ended_at", comment: "The time the session ended"
     t.boolean "initialized", default: false, null: false
@@ -64,21 +88,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_144422) do
     t.string "role", default: "server", null: false, comment: "The role of the session"
     t.jsonb "server_capabilities", comment: "The capabilities of the server"
     t.jsonb "server_info", comment: "The information about the server"
-    t.integer "sse_event_counter", default: 0, null: false
     t.string "status", default: "pre_initialize", null: false
     t.jsonb "tool_registry", default: []
     t.datetime "updated_at", null: false
-  end
-
-  create_table "action_mcp_sse_events", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.text "data", null: false
-    t.integer "event_id", null: false
-    t.string "session_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["created_at"], name: "index_action_mcp_sse_events_on_created_at"
-    t.index ["session_id", "event_id"], name: "index_action_mcp_sse_events_on_session_id_and_event_id", unique: true
-    t.index ["session_id"], name: "index_action_mcp_sse_events_on_session_id"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -233,10 +245,21 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_144422) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "api_token"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.string "name"
+    t.string "password_digest"
+    t.datetime "updated_at", null: false
+    t.index ["api_token"], name: "index_users_on_api_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+  end
+
   add_foreign_key "action_mcp_session_messages", "action_mcp_sessions", column: "session_id", name: "fk_action_mcp_session_messages_session_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "action_mcp_session_resources", "action_mcp_sessions", column: "session_id", on_delete: :cascade
   add_foreign_key "action_mcp_session_subscriptions", "action_mcp_sessions", column: "session_id", on_delete: :cascade
-  add_foreign_key "action_mcp_sse_events", "action_mcp_sessions", column: "session_id"
+  add_foreign_key "action_mcp_session_tasks", "action_mcp_sessions", column: "session_id", name: "fk_action_mcp_session_tasks_session_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

@@ -1,0 +1,145 @@
+# COSS Metadata v0.0.3
+# MCP Rails Template - ActionMCP example application
+
+##########################################################
+# 1. Basic Project Information
+name = "mcp_rails_template"
+version = "0.1.0"
+description = "Example Rails application demonstrating ActionMCP gem integration for Model Context Protocol servers"
+licenses = ["MIT"]
+ai_contributions = true
+coss_compliant = true
+homepage = "https://github.com/seuros/mcp_rails_template"
+keywords = ["rails", "mcp", "model-context-protocol", "actionmcp", "ruby", "llm", "ai"]
+
+##########################################################
+# 2. Repository and Issue Tracking
+repository = "https://github.com/seuros/mcp_rails_template"
+issue_tracker = "https://github.com/seuros/mcp_rails_template/issues"
+documentation = "https://github.com/seuros/action_mcp"
+
+##########################################################
+# 3. Languages, Frameworks, and Platforms
+languages = ["Ruby"]
+
+[frameworks]
+backend = { name = "Rails", version = "8.1.x" }
+
+supported_platforms = ["linux", "darwin"]
+
+##########################################################
+# 4. Dependency Lock Files
+[dependency_locks]
+ruby = "Gemfile.lock"
+
+[packaging]
+ruby = "bundle exec rake build"
+
+##########################################################
+# 5. Maintainers and Governance
+maintainers = ["abdelkader@seuros.com"]
+governance = { type = "informal" }
+
+##########################################################
+# 6. Linting, Formatting, and Static Analysis
+lint = "bin/rubocop"
+format = "bin/rubocop -a"
+static_analysis = ["bin/brakeman"]
+
+##########################################################
+# 7. CI and Build Commands
+build = "bundle install"
+test = "bundle exec rails test"
+coverage = "COVERAGE=true bundle exec rails test"
+
+##########################################################
+# 8. Tests and Quality Metrics
+[test_frameworks]
+ruby = "minitest"
+
+test_report_format = "minitest"
+coverage_threshold = 0
+
+##########################################################
+# 9. Commit Guidelines and Formats
+commit_message_format = "Conventional Commits"
+
+##########################################################
+# 10. Release and Changelog
+changelog = "CHANGELOG.md"
+release_tag_pattern = "v{version}"
+
+##########################################################
+# 11. Badges and Integrations
+[badges]
+ci = ""
+coverage = ""
+license_badge = ""
+
+##########################################################
+# 12. Optional Miscellaneous Fields
+chat = ""
+support = { type = "github", contact = "https://github.com/seuros/mcp_rails_template/issues" }
+apidocs = ""
+
+##########################################################
+# 13. Environment and Runtime Info
+[environments]
+ruby = "3.4.7"
+
+##########################################################
+# 14. Data Schemas and Contracts
+[data_contracts]
+openapi = ""
+graphql = ""
+avro = ""
+
+##########################################################
+# 15. Project Classification
+project_type = "application"
+maturity = "experimental"
+audience = ["developers", "ai-engineers"]
+
+##########################################################
+# 16. Localization / Internationalization
+[i18n]
+default_locale = "en"
+supported_locales = ["en"]
+translation_files = "config/locales/"
+
+##########################################################
+# 17. Contribution Automation
+[contribution_tooling]
+dependabot = true
+precommit_hooks = false
+ai_review = "disabled"
+codeowners = ""
+
+##########################################################
+# 18. Security Scanning and SBOM
+[security]
+sbom = ""
+vulnerability_scanner = "brakeman"
+license_compliance_tool = ""
+
+##########################################################
+# 19. Documentation Quality Flags
+[docs]
+coverage = 0
+style = ""
+ai_summary_enabled = false
+
+##########################################################
+# 20. Submodules and Component References
+[submodules]
+# ActionMCP gem is the main dependency
+# actionmcp = "https://github.com/seuros/action_mcp"
+
+##########################################################
+# 21. Package Identification (PURL)
+[package_identity]
+purl = "pkg:github/seuros/mcp_rails_template"
+
+[dependencies_purl]
+actionmcp = "pkg:gem/actionmcp@0.83"
+rails = "pkg:gem/railties@8.1.0"
