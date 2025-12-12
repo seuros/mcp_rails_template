@@ -150,7 +150,7 @@ GEM
     json (2.17.1)
     jsonrpc-rails (0.5.4)
       railties (>= 8.0.1)
-    jwt (2.10.2)
+    jwt (3.1.2)
       base64
     kamal (2.9.0)
       activesupport (>= 7.0)
@@ -403,7 +403,7 @@ DEPENDENCIES
   debug
   falcon
   foreman
-  jwt (~> 2.10)
+  jwt (~> 3.1)
   kamal
   pg
   railties (~> 8.1.0)
