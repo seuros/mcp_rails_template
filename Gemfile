@@ -27,7 +27,7 @@ gem "solid_mcp", "~> 0.5"
 gem "bcrypt", "~> 3.1.7"
 
 # JWT for authentication tokens
-gem "jwt", "~> 2.10"
+gem "jwt", "~> 3.1"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
