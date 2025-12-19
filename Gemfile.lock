@@ -108,13 +108,13 @@ GEM
       json
     crass (1.0.6)
     date (3.5.1)
-    debug (1.11.0)
+    debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
     dotenv (3.2.0)
     drb (2.2.3)
     ed25519 (1.4.0)
-    erb (6.0.0)
+    erb (6.0.1)
     erubi (1.13.1)
     falcon (0.53.0)
       async
@@ -139,11 +139,11 @@ GEM
       activesupport (>= 6.1)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
-    io-console (0.8.1)
+    io-console (0.8.2)
     io-endpoint (0.16.0)
     io-event (1.14.2)
     io-stream (0.11.1)
-    irb (1.15.3)
+    irb (1.16.0)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
@@ -236,7 +236,7 @@ GEM
       protocol-http (~> 0.43)
       rack (>= 1.0)
     protocol-url (0.4.0)
-    psych (5.3.0)
+    psych (5.3.1)
       date
       stringio
     racc (1.8.1)
@@ -271,7 +271,7 @@ GEM
       rake-compiler-dock (= 1.10.0)
     rbs (3.9.5)
       logger
-    rdoc (6.17.0)
+    rdoc (7.0.1)
       erb
       psych (>= 4.0.0)
       tsort
@@ -362,7 +362,7 @@ GEM
       activerecord (>= 7.2)
       state_machines-activemodel (>= 0.100.0)
     string-format (0.2.0)
-    stringio (3.1.9)
+    stringio (3.2.0)
     thor (1.4.0)
     timeout (0.5.0)
     traces (0.18.2)
