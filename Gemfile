@@ -24,7 +24,7 @@ gem "actionmcp"
 gem "solid_mcp", "~> 0.5"
 
 # Use bcrypt for has_secure_password
-gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.21"
 
 # JWT for authentication tokens
 gem "jwt", "~> 3.1"
