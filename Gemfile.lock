@@ -92,7 +92,7 @@ GEM
       bigdecimal
       samovar (~> 2.1)
     base64 (0.3.0)
-    bcrypt (3.1.20)
+    bcrypt (3.1.21)
     bcrypt_pbkdf (1.1.2)
     bigdecimal (3.3.1)
     bootsnap (1.19.0)
@@ -397,7 +397,7 @@ DEPENDENCIES
   actionview (~> 8.1.0)
   activejob (~> 8.1.0)
   activerecord (~> 8.1.0)
-  bcrypt (~> 3.1.7)
+  bcrypt (~> 3.1.21)
   bootsnap
   brakeman
   debug
