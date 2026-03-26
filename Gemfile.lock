@@ -219,7 +219,7 @@ GEM
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.6.0)
+    prism (1.9.0)
     process-metrics (0.8.0)
       console (~> 1.8)
       json (~> 2)
@@ -269,8 +269,10 @@ GEM
     rake-compiler-dock (1.10.0)
     rb_sys (0.9.119)
       rake-compiler-dock (= 1.10.0)
-    rbs (3.9.5)
+    rbs (4.0.2)
       logger
+      prism (>= 1.6.0)
+      tsort
     rdoc (6.17.0)
       erb
       psych (>= 4.0.0)
@@ -306,7 +308,7 @@ GEM
       rubocop (>= 1.72)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
-    ruby-lsp (0.26.4)
+    ruby-lsp (0.26.9)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 5)
